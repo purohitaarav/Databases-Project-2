@@ -21,6 +21,22 @@ llm = Llama(model_path="Phi-3.5-mini-instruct-Q4_K_M.gguf", n_threads=4)
 
 def make_prompt(question: str) -> str:
     return (
+        f"""
+        You are an expert SQL generator.
+
+        You will be given:
+        1. A database schema (list of tables and columns).
+        2. A natural language question.
+
+        Your task:
+        - Generate ONE valid SQL SELECT query.
+        - Use ONLY the table and column names EXACTLY as they appear in the schema.
+        - NEVER invent new table names or columns.
+        - When doing FROM TableName, make sure the TableName is a part of the schema given or you will be punished.
+        - NEVER guess — if the question can't be answered with the schema, return exactly: ERROR: Insufficient schema information.
+        - Do NOT include explanations, comments, or formatting. Output ONLY the SQL query.
+        """
+
         f"Schema: {schema_summary}\n"
         f"Question: {question}\n"
         "### Response: One valid SQL SELECT query (no extras).\n"
